@@ -72,27 +72,37 @@ void disableServos(){                   // Halt servo signals
 
 //##################
 //MOVEMENT FUNCTIONS
- void forward()                          // Forward function
- {
-   enableServos();
-   //disableServos();
-   if (leftDistance < 50 and leftDistance > 5){
-     correctingLeft();
-     delay(5);
-     Serial.println("C: ");                            // Sends the distance value into the Serial Port
-   }
-   else if (rightDistance < 50 and rightDistance > 5){
-     correctingRight();
-     delay(5);
-     Serial.println("R: ");                            // Sends the distance value into the Serial Port
-   }
-   else{
-     servoLeft.writeMicroseconds(1550);    // Left wheel counterclockwise
-     servoRight.writeMicroseconds(1450);   // Right wheel clockwise
-     //delay(5);
-     Serial.println("G: ");                            // Sends the distance value into the Serial Port
-   }
- }
+void forward()                          // Forward function
+{
+  enableServos();
+  //disableServos();
+  servoLeft.writeMicroseconds(1550);    // Left wheel counterclockwise
+  servoRight.writeMicroseconds(1450);   // Right wheel clockwise
+  centering();
+}
+// void forward()                          // Forward function
+// {
+//   enableServos();
+//   //disableServos();
+
+//   if (leftDistance < 50 and leftDistance > 5){
+//     correctingLeft();
+//     delay(5);
+//     Serial.println("C: ");                            // Sends the distance value into the Serial Port
+//   }
+//   else if (rightDistance < 50 and rightDistance > 5){
+//     correctingRight();
+//     delay(5);
+//     Serial.println("R: ");                            // Sends the distance value into the Serial Port
+//   }
+//   else{
+//     servoLeft.writeMicroseconds(1550);    // Left wheel counterclockwise
+//     servoRight.writeMicroseconds(1450);   // Right wheel clockwise
+//     //delay(5);
+//     Serial.println("G: ");                            // Sends the distance value into the Serial Port
+//   }
+// }
+
 
 //########################
 //AUTOCORRECTING FUNCTIONS
@@ -106,6 +116,33 @@ void correctingRight()
   servoLeft.writeMicroseconds(1500);    // Left wheel counterclockwise slower
   servoRight.writeMicroseconds(1450);   // Right wheel clockwise
 }
+
+
+//########################
+//Centering FUNCTIONS
+void centering(){
+  long marginOfError = 40;
+  if (abs(leftDistance - rightDistance) > marginOfError){
+    Serial.println("Absolute");                            // Sends the distance value into the Serial Port
+    if (leftDistance < rightDistance){
+      correctingLeft();
+      delay(5);
+      Serial.println("L");                            // Sends the distance value into the Serial Port
+    }
+    else{
+      correctingRight();
+      delay(5);
+      Serial.println("R");                            // Sends the distance value into the Serial Port
+    }
+  }
+  else{
+    servoLeft.writeMicroseconds(1550);    // Left wheel counterclockwise
+    servoRight.writeMicroseconds(1450);   // Right wheel clockwise
+    //delay(5);
+    Serial.println("G: ");                            // Sends the distance value into the Serial Port
+  }
+}
+
 
 //void backward()//int time)              // Backward function
 //{
