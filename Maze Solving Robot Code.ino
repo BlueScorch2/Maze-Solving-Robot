@@ -69,10 +69,20 @@ void loop()
   }
   // If wall only in front (T junction)
   else if (calculateFrontDistance() < DISTANCE && calculateRightDistance() > DISTANCE && calculateLeftDistance() > DISTANCE){
-    // Need to buy switch to iterate over choices
-    // Always going left on the first iteration
-    // Always going right on the second iteration
-    // Comparing the iterations
+    //Need to change this code once switch is implemented to change iteration
+    if (iteration == 0){
+      rotateLeft(); 
+      delay(500);
+      forward();
+    }
+    else if (iteration == 1){
+      rotateRight(); 
+      delay(500);
+      forward();
+    }
+    else{
+      //Compare times and pick fastest route
+    }
   }
   else
   {
