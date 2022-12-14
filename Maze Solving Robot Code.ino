@@ -47,10 +47,12 @@ void loop(){
   else{
     disableServos();
     }
-  Serial.print("F: ");                            // Sends the distance value into the Serial Port
+  Serial.print("F: ");                              // Sends the distance value into the Serial Port
   Serial.println(frontDistance);                    // Sends the distance value into the Serial Port
-  Serial.print("L: ");                            // Sends the distance value into the Serial Port
+  Serial.print("L: ");                              // Sends the distance value into the Serial Port
   Serial.println(leftDistance);                     // Sends the distance value into the Serial Port
+  Serial.print("R: ");                              // Sends the distance value into the Serial Port
+  Serial.println(rightDistance);                     // Sends the distance value into the Serial Port
   //delay(15);                                      // delay between triggering the sensor 
 }
 
@@ -70,27 +72,39 @@ void disableServos(){                   // Halt servo signals
 
 //##################
 //MOVEMENT FUNCTIONS
-void forward()                          // Forward function
-{
-  enableServos();
-  //disableServos();
+ void forward()                          // Forward function
+ {
+   enableServos();
+   //disableServos();
+   if (leftDistance < 50 and leftDistance > 5){
+     correctingLeft();
+     delay(5);
+     Serial.println("C: ");                            // Sends the distance value into the Serial Port
+   }
+   else if (rightDistance < 50 and rightDistance > 5){
+     correctingRight();
+     delay(5);
+     Serial.println("R: ");                            // Sends the distance value into the Serial Port
+   }
+   else{
+     servoLeft.writeMicroseconds(1550);    // Left wheel counterclockwise
+     servoRight.writeMicroseconds(1450);   // Right wheel clockwise
+     //delay(5);
+     Serial.println("G: ");                            // Sends the distance value into the Serial Port
+   }
+ }
 
-  if (leftDistance < 40 and leftDistance > 5){
-    correctingLeft();
-    //delay(5);
-    Serial.println("C: ");                            // Sends the distance value into the Serial Port
-  }
-  //else if (rightDistance = 15){
-    //correctingRight();
-    //Serial.println("R: ");                            // Sends the distance value into the Serial Port
-    //delay(20);
-  //}
-  else{
-    servoLeft.writeMicroseconds(1700);    // Left wheel counterclockwise
-    servoRight.writeMicroseconds(1300);   // Right wheel clockwise
-    //delay(20);
-    Serial.println("G: ");                            // Sends the distance value into the Serial Port
-  }
+//########################
+//AUTOCORRECTING FUNCTIONS
+static bool correctingLeft()
+{
+  servoLeft.writeMicroseconds(1550);    // Left wheel counterclockwise
+  servoRight.writeMicroseconds(1500);   // Right wheel clockwise slower
+}
+void correctingRight()
+{
+  servoLeft.writeMicroseconds(1500);    // Left wheel counterclockwise slower
+  servoRight.writeMicroseconds(1450);   // Right wheel clockwise
 }
 
 //void backward()//int time)              // Backward function
@@ -126,19 +140,6 @@ void turnRight()                        // Left turn function
   }
 }
 
-
-//########################
-//AUTOCORRECTING FUNCTIONS
-void correctingLeft()
-{
-  servoLeft.writeMicroseconds(1700);    // Left wheel counterclockwise
-  servoRight.writeMicroseconds(1500);   // Right wheel clockwise slower
-}
-void correctingRight()
-{
-  servoLeft.writeMicroseconds(1500);    // Left wheel counterclockwise slower
-  servoRight.writeMicroseconds(1300);   // Right wheel clockwise
-}
 
 //##############################
 //DISTANCE CALCULATION FUNCTIONS
