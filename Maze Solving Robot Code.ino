@@ -27,6 +27,10 @@ long rightDistance;
 void setup(){
   pinMode(trigPinF, OUTPUT);             // Sets the trigPinF as an Output
   pinMode(echoPinF, INPUT);              // Sets the echoPinF as an Input
+  pinMode(trigPinL, OUTPUT);             // Sets the trigPinF as an Output
+  pinMode(echoPinL, INPUT);              // Sets the echoPinF as an Input
+  pinMode(trigPinR, OUTPUT);             // Sets the trigPinF as an Output
+  pinMode(echoPinR, INPUT);              // Sets the echoPinF as an Input
   
   Serial.begin(9600);
 }
@@ -34,11 +38,20 @@ void setup(){
 //##########
 void loop(){   
   frontDistance = calculateFrontDistance();       // Calls a function for calculating the distance measured by the Ultrasonic sensor for each degree
-  if  (frontDistance > 70) {forward();  }
-  else{                     disableServos();  }
   
-  Serial.println(frontDistance);                  // Sends the distance value into the Serial Port
-  delay(15);                                      // delay between triggering the sensor 
+  if  (frontDistance > 70){
+    leftDistance = calculateLeftDistance();         // Calls a function for calculating the distance measured by the Ultrasonic sensor for each degree
+    rightDistance = calculateRightDistance();       // Calls a function for calculating the distance measured by the Ultrasonic sensor for each degree
+    forward();
+    }
+  else{
+    disableServos();
+    }
+  Serial.print("F: ");                            // Sends the distance value into the Serial Port
+  Serial.println(frontDistance);                    // Sends the distance value into the Serial Port
+  Serial.print("L: ");                            // Sends the distance value into the Serial Port
+  Serial.println(leftDistance);                     // Sends the distance value into the Serial Port
+  //delay(15);                                      // delay between triggering the sensor 
 }
 
 
@@ -60,15 +73,23 @@ void disableServos(){                   // Halt servo signals
 void forward()                          // Forward function
 {
   enableServos();
-  servoLeft.writeMicroseconds(1700);    // Left wheel counterclockwise
-  servoRight.writeMicroseconds(1300);   // Right wheel clockwise
   //disableServos();
 
-  if (leftDistance < 35){
-    correctingLeft(); 
+  if (leftDistance < 40 and leftDistance > 5){
+    correctingLeft();
+    //delay(5);
+    Serial.println("C: ");                            // Sends the distance value into the Serial Port
   }
-  if (rightDistance < 35){
-    correctingRight();
+  //else if (rightDistance = 15){
+    //correctingRight();
+    //Serial.println("R: ");                            // Sends the distance value into the Serial Port
+    //delay(20);
+  //}
+  else{
+    servoLeft.writeMicroseconds(1700);    // Left wheel counterclockwise
+    servoRight.writeMicroseconds(1300);   // Right wheel clockwise
+    //delay(20);
+    Serial.println("G: ");                            // Sends the distance value into the Serial Port
   }
 }
 
@@ -111,14 +132,13 @@ void turnRight()                        // Left turn function
 void correctingLeft()
 {
   servoLeft.writeMicroseconds(1700);    // Left wheel counterclockwise
-  servoRight.writeMicroseconds(1350);   // Right wheel clockwise slower
+  servoRight.writeMicroseconds(1500);   // Right wheel clockwise slower
 }
 void correctingRight()
 {
-  servoLeft.writeMicroseconds(1650);    // Left wheel counterclockwise slower
+  servoLeft.writeMicroseconds(1500);    // Left wheel counterclockwise slower
   servoRight.writeMicroseconds(1300);   // Right wheel clockwise
 }
-
 
 //##############################
 //DISTANCE CALCULATION FUNCTIONS
